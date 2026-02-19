@@ -1,33 +1,50 @@
 import allure
-from selene import browser, be
-from selene.support.conditions import have
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 class RegistrationPage:
-    def __init__(self):
-        pass
+    def __init__(self, driver):
+        self.driver = driver
+        self.wait = WebDriverWait(driver, timeout=10)
 
     @allure.step("Open url https://the-internet.herokuapp.com/login")
     def open(self):
-        browser.open('https://the-internet.herokuapp.com/login')
-        browser.driver.execute_script("$('#fixedban').remove()")
-        browser.driver.execute_script("$('footer').remove()")
+        self.driver.get('https://the-internet.herokuapp.com/login')
+        self.driver.execute_script("$('#fixedban').remove()")
+        self.driver.execute_script("$('footer').remove()")
 
     @allure.step("Fill username")
     def fill_username(self, text):
-        browser.element('#username').type(text)
+        self.driver.find_element(By.ID, 'username').send_keys(text)
 
     @allure.step("Fill password")
     def fill_password(self, value):
-        browser.element('#password').type(value)
+        self.driver.find_element(By.ID, 'password').send_keys(value)
 
     @allure.step("Click submit button")
     def submit(self):
-        submit_button = browser.element('button[type="submit"]')  # выбираем по значению атрибута value
-        web_submit_button = submit_button.locate()
-        browser.driver.execute_script('arguments[0].click();', web_submit_button)
+        submit_button = self.driver.find_element(By.CSS_SELECTOR, 'button[type="submit"]')
+        self.driver.execute_script('arguments[0].click();', submit_button)
 
     def should_have_submission_confirmation(self):
-        browser.element('#flash-messages .flash.error').should(be.visible).should(
-            have.text('Your username is invalid!'))
+        error_message = self.driver.find_element(By.CSS_SELECTOR, '#flash-messages .flash.error')
+        assert error_message.is_displayed(), "Error message not visible"
+        assert "Your username is invalid!" in error_message.text, "Incorrect error message displayed"
+
+@allure.title("Successful fill form")
+def test_fill_form():
+    driver = webdriver.Chrome()
+    registration_page = RegistrationPage(driver)
+    try:
+        registration_page.open()
+        registration_page.fill_username("invalid_user")
+        registration_page.fill_password("password")
+        registration_page.submit()
+        registration_page.should_have_submission_confirmation()
+    finally:
+        driver.quit()
+
+
 

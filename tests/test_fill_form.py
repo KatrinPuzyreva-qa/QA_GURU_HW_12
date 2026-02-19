@@ -1,10 +1,12 @@
 import allure
+from selenium import webdriver
+
 from pages.registration_page import RegistrationPage
 
 @allure.title("Successful fill form")
 def test_fill_form():
-
-    registration_page = RegistrationPage()
+    driver = webdriver.Chrome()
+    registration_page = RegistrationPage(driver)
 
     with allure.step("Open registrations form"):
         registration_page.open()
@@ -14,3 +16,4 @@ def test_fill_form():
         registration_page.submit()
     with allure.step("Check form results"):
         registration_page.should_have_submission_confirmation()
+
