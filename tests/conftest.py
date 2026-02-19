@@ -1,7 +1,6 @@
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-
 from utils.attach import add_screenshot, add_page_source, add_console_logs, add_video
 
 
@@ -27,9 +26,12 @@ def setup_browser():
 
     yield driver
 
+    # Сохраняем скриншоты, логи браузера и видео после каждого теста
     add_screenshot(driver)
     add_page_source(driver)
     add_console_logs(driver)
     add_video(driver)
 
     driver.quit()
+
+

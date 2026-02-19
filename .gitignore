@@ -22,7 +22,7 @@ var/
 wheels/
 share/python-wheels/
 *.egg-info/
-./allure-results
+.allure-results
 .installed.cfg
 *.egg
 MANIFEST

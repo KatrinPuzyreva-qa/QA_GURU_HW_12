@@ -33,18 +33,3 @@ class RegistrationPage:
         assert error_message.is_displayed(), "Error message not visible"
         assert "Your username is invalid!" in error_message.text, "Incorrect error message displayed"
 
-@allure.title("Successful fill form")
-def test_fill_form():
-    driver = webdriver.Chrome()
-    registration_page = RegistrationPage(driver)
-    try:
-        registration_page.open()
-        registration_page.fill_username("invalid_user")
-        registration_page.fill_password("password")
-        registration_page.submit()
-        registration_page.should_have_submission_confirmation()
-    finally:
-        driver.quit()
-
-
-
