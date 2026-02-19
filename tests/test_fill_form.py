@@ -1,6 +1,5 @@
 import allure
 from selenium import webdriver
-
 from pages.registration_page import RegistrationPage
 
 @allure.title("Successful fill form")

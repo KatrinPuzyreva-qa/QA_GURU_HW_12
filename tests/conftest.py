@@ -1,8 +1,16 @@
+import os
+import shutil
+
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from utils.attach import add_screenshot, add_page_source, add_console_logs, add_video
 
+@pytest.fixture(scope="session", autouse=True)
+def clean_allure_results():
+    results_dir = os.path.join(os.getcwd(), "allure-results")
+    if os.path.exists(results_dir):
+        shutil.rmtree(results_dir)
 
 @pytest.fixture(scope='function')
 def setup_browser():
