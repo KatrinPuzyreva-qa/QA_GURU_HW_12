@@ -2,5 +2,5 @@ pytest~=9.0.2
 selene==2.0.0rc9
 selenium==4.39.0
 allure-pytest
-driver-manager>=4.0.0
+webdriver_manager==latest_version_here
 allure-python-commons~=2.15.3
