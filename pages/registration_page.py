@@ -1,7 +1,8 @@
 import allure
-from selenium import webdriver
+import self
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
+from webdriver_manager.core import driver
 
 
 class RegistrationPage:
@@ -9,7 +10,8 @@ class RegistrationPage:
         self.driver = driver
         self.wait = WebDriverWait(driver, timeout=10)
 
-    @allure.step("Open url https://the-internet.herokuapp.com/login")
+
+    @allure.step("Open url")
     def open(self):
         self.driver.get('https://the-internet.herokuapp.com/login')
         self.driver.execute_script("$('#fixedban').remove()")
@@ -28,6 +30,7 @@ class RegistrationPage:
         submit_button = self.driver.find_element(By.CSS_SELECTOR, 'button[type="submit"]')
         self.driver.execute_script('arguments[0].click();', submit_button)
 
+    @allure.step("Check form results")
     def should_have_submission_confirmation(self):
         error_message = self.driver.find_element(By.CSS_SELECTOR, '#flash-messages .flash.error')
         assert error_message.is_displayed(), "Error message not visible"
