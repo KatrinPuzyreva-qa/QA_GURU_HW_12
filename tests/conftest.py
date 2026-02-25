@@ -7,24 +7,25 @@ from utils import attach
 
 @pytest.fixture(scope='function')
 def setup_browser():
-    # Устанавливаем нужные опции браузера
+    # Опции браузера
     options = Options()
-    options.headless = True  # Если нужен режим без графического интерфейса
-    options.add_argument('--window-size=1920,1080')  # Размер окна браузера
+    options.headless = True  # Без отображения графического интерфейса
+    options.add_argument('--window-size=1920,1080')  # Окно размером 1920×1080 пикселей
 
-    # Используем менеджер драйверов для автоматического выбора подходящей версии chrome
+    # Теперь используем сервис менеджера драйверов для автозапуска нужного драйвера
+
     service = webdriver.ChromeService(ChromeDriverManager().install())
 
-    # Инициализация удалённого веб-драйвера
+    # Удалённое подключение к Selenoid
     driver = webdriver.Remote(
-        command_executor="https://user1:1234@ru.selenoid.autotests.cloud/wd/hub",
-        options=options,
-        desired_capabilities={'browserName': 'chrome'}
+        command_executor="https://user1:1234@selenoid.autotests.cloud/wd/hub",
+        options=options
     )
 
-
+    # Драйвер возвращается и очищается после завершения теста
     yield driver
-    #driver.quit()  # Завершаем работу браузера после окончания теста
+    driver.quit()
+
 
 
     # Сохраняем скриншоты, логи браузера и видео после каждого теста
