@@ -1,11 +1,10 @@
 import allure
-from selenium import webdriver
 from pages.registration_page import RegistrationPage
 
 @allure.title("Successful fill form")
-def test_fill_form():
-    driver = webdriver.Chrome()
-    registration_page = RegistrationPage(driver)
+def test_fill_form(browser):
+    registration_page = RegistrationPage(browser)
+    registration_page.open()
 
     with allure.step("Open registrations form"):
         registration_page.open()

@@ -1,18 +1,16 @@
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selene import browser
-
-from utils import attach
 
 
-@pytest.fixture(autouse=True)
-def browser_management():
-    options = Options()
-    options.add_argument("--disable-infobars")
-    options.add_argument("--disable-notifications")
+@pytest.fixture(scope='session')
+def browser():
+    """Фикстура для запуска браузера"""
+    chrome_options = Options()
+    chrome_options.add_argument('--disable-infobars')     # отключаем всплывающие уведомления
+    chrome_options.add_argument('--disable-notifications')  # отключаем push-уведомления
 
-    selenoid_capabilities = {
+    capabilities = {
         "browserName": "chrome",
         "browserVersion": "128.0",
         "selenoid:options": {
@@ -20,22 +18,15 @@ def browser_management():
             "enableVideo": True
         }
     }
-    options.capabilities.update(selenoid_capabilities)
+    chrome_options.capabilities.update(capabilities)
 
     driver = webdriver.Remote(
         command_executor="https://user1:1234@selenoid.autotests.cloud/wd/hub",
-        options=options
+        options=chrome_options
     )
 
-    browser.config.driver = driver
-    browser.config.timeout = 10
+    yield driver
 
-    yield
+    driver.quit()
 
-    attach.add_screenshot(driver)
-    attach.add_page_source(driver)
-    attach.add_logs(driver)
-    attach.add_video(driver)
-
-    browser.quit()
 

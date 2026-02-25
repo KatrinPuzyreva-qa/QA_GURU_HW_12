@@ -1,5 +1,5 @@
 pytest==9.0.2
-selene==2.0.0rc9
+selene==2.0.0rc5
 selenium==4.40.0
 allure-pytest>=2.15.0
 allure-python-commons
