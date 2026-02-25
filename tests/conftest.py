@@ -1,39 +1,41 @@
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
+from selene import browser
+
 from utils import attach
 
 
-@pytest.fixture(scope='function')
-def setup_browser():
-    # Опции браузера
+@pytest.fixture(autouse=True)
+def browser_management():
     options = Options()
-    options.headless = True  # Без отображения графического интерфейса
-    options.add_argument('--window-size=1920,1080')  # Окно размером 1920×1080 пикселей
+    options.add_argument("--disable-infobars")
+    options.add_argument("--disable-notifications")
 
-    # Теперь используем сервис менеджера драйверов для автозапуска нужного драйвера
+    selenoid_capabilities = {
+        "browserName": "chrome",
+        "browserVersion": "128.0",
+        "selenoid:options": {
+            "enableVNC": True,
+            "enableVideo": True
+        }
+    }
+    options.capabilities.update(selenoid_capabilities)
 
-    service = webdriver.ChromeService(ChromeDriverManager().install())
-
-    # Удалённое подключение к Selenoid
     driver = webdriver.Remote(
-        command_executor="https://user1:1234@selenoid.autotests.cloud/wd/hub",
+        command_executor="https://user1:1234@ru.selenoid.autotests.cloud/wd/hub",
         options=options
     )
 
-    # Драйвер возвращается и очищается после завершения теста
-    yield driver
-    driver.quit()
+    browser.config.driver = driver
+    browser.config.timeout = 10
 
+    yield
 
-
-    # Сохраняем скриншоты, логи браузера и видео после каждого теста
     attach.add_screenshot(driver)
-    attach.add_console_logs(driver)
     attach.add_page_source(driver)
+    attach.add_logs(driver)
     attach.add_video(driver)
 
-    driver.quit()
-
+    browser.quit()
 
