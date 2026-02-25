@@ -1,8 +1,7 @@
 import allure
-import self
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
-from webdriver_manager.core import driver
+
 
 
 class RegistrationPage:
